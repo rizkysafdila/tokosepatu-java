@@ -5,7 +5,9 @@
         <group>
             <file>file:/C:/Users/asusl/Documents/NetBeansProjects/TokoSepatu/src/tokosepatu/view/MainView.java</file>
             <file>file:/C:/Users/asusl/Documents/NetBeansProjects/TokoSepatu/src/tokosepatu/modul/kasir/Transaksi.java</file>
-            <file>file:/C:/Users/asusl/Documents/NetBeansProjects/TokoSepatu/src/koneksi/Koneksi.java</file>
+            <file>file:/C:/Users/asusl/Documents/NetBeansProjects/TokoSepatu/src/tokosepatu/modul/kasir/Edit.java</file>
+            <file>file:/C:/Users/asusl/Documents/NetBeansProjects/TokoSepatu/src/tokosepatu/modul/karyawan/Form_karyawan.java</file>
+            <file>file:/C:/Users/asusl/Documents/NetBeansProjects/TokoSepatu/src/tokosepatu/modul/kasir/CreateOrder.java</file>
         </group>
     </open-files>
 </project-private>

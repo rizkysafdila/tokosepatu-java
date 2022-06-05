@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import tokosepatu.modul.kasir.Transaksi;
 
 /**
  *
@@ -27,6 +28,8 @@ public class MainView extends javax.swing.JFrame {
 //        setVisible(true);
 //        setResizable(false);
     }
+    
+    Transaksi trans = new Transaksi();
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -50,9 +53,6 @@ public class MainView extends javax.swing.JFrame {
         panelTitle = new javax.swing.JLabel();
         orderPanel = new javax.swing.JPanel();
         panelTitle1 = new javax.swing.JLabel();
-        btnNewOrder = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
         productPanel = new javax.swing.JPanel();
         panelTitle2 = new javax.swing.JLabel();
         karyawanPanel = new javax.swing.JPanel();
@@ -185,64 +185,21 @@ public class MainView extends javax.swing.JFrame {
         panelTitle1.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         panelTitle1.setText("Orderan");
 
-        btnNewOrder.setBackground(new java.awt.Color(59, 130, 246));
-        btnNewOrder.setFont(new java.awt.Font("Segoe UI", 0, 28)); // NOI18N
-        btnNewOrder.setForeground(new java.awt.Color(255, 255, 255));
-        btnNewOrder.setText("Buat Orderan");
-        btnNewOrder.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNewOrderActionPerformed(evt);
-            }
-        });
-
-        jScrollPane1.setFont(new java.awt.Font("Segoe UI", 0, 28)); // NOI18N
-
-        jTable1.setFont(new java.awt.Font("Segoe UI", 0, 28)); // NOI18N
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
-            },
-            new String [] {
-                "id", "Tanggal", "Barang", "Qty", "Total", "Status"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(jTable1);
-
         javax.swing.GroupLayout orderPanelLayout = new javax.swing.GroupLayout(orderPanel);
         orderPanel.setLayout(orderPanelLayout);
         orderPanelLayout.setHorizontalGroup(
             orderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(orderPanelLayout.createSequentialGroup()
                 .addGap(44, 44, 44)
-                .addGroup(orderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(btnNewOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(orderPanelLayout.createSequentialGroup()
-                        .addComponent(panelTitle1)
-                        .addGap(1343, 1343, 1343))
-                    .addComponent(jScrollPane1))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addComponent(panelTitle1)
+                .addContainerGap(1389, Short.MAX_VALUE))
         );
         orderPanelLayout.setVerticalGroup(
             orderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(orderPanelLayout.createSequentialGroup()
                 .addGap(53, 53, 53)
                 .addComponent(panelTitle1)
-                .addGap(36, 36, 36)
-                .addComponent(btnNewOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(407, Short.MAX_VALUE))
+                .addContainerGap(983, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Orderan", orderPanel);
@@ -387,10 +344,6 @@ public class MainView extends javax.swing.JFrame {
         resetColor(btnSetting);
         jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_btnOrderActionPerformed
-
-    private void btnNewOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewOrderActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnNewOrderActionPerformed
     
     void setActiveColor(JButton button) {
         button.setBackground(new Color(59,130,246));
@@ -441,15 +394,12 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JPanel bodyPanel;
     private javax.swing.JButton btnDashboard;
     private javax.swing.JButton btnKaryawan;
-    private javax.swing.JButton btnNewOrder;
     private javax.swing.JButton btnOrder;
     private javax.swing.JButton btnProduk;
     private javax.swing.JButton btnSetting;
     private javax.swing.JPanel dashboardPanel;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JPanel karyawanPanel;
     private javax.swing.JPanel orderPanel;
     private javax.swing.JLabel panelTitle;

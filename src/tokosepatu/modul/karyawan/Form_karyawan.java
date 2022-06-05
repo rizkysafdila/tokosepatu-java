@@ -463,8 +463,6 @@ public class Form_karyawan extends javax.swing.JFrame {
                 datatable();
                 break;
         }
-
-
     }//GEN-LAST:event_bhapusActionPerformed
 
     private void txtnamaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtnamaActionPerformed
