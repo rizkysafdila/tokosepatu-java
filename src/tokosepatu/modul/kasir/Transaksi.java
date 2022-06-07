@@ -12,13 +12,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 import koneksi.Koneksi;
 
 /**
@@ -32,12 +30,13 @@ public class Transaksi extends javax.swing.JFrame {
      */
     public Transaksi() {
         initComponents();
+        setResizable(false);
+        
         datatable();
     }
-    
-    int choosenId = 0;
 
     CreateOrder order = new CreateOrder();
+    EditOrder editOrder = new EditOrder();
     ProdukSelector prod = new ProdukSelector();
 
     DecimalFormat id = (DecimalFormat) DecimalFormat.getCurrencyInstance();
@@ -51,12 +50,13 @@ public class Transaksi extends javax.swing.JFrame {
         tbl.addColumn("Barang");
         tbl.addColumn("Jumlah");
         tbl.addColumn("Total Bayar");
+        tbl.addColumn("Metode Pembayaran");
         tbl.addColumn("Status");
         tableOrder.setModel(tbl);
 
         try {
             Statement statement = (Statement) Koneksi.getConnection().createStatement();
-            ResultSet res = statement.executeQuery("SELECT * FROM tb_transaksi ts LEFT JOIN tb_barang brg ON ts.id_barang = brg.id");
+            ResultSet res = statement.executeQuery("SELECT * FROM tb_transaksi ts LEFT JOIN tb_barang brg ON ts.id_barang = brg.id ORDER BY ts.id");
             int num = 0;
 
             rp.setCurrencySymbol("Rp");
@@ -86,25 +86,50 @@ public class Transaksi extends javax.swing.JFrame {
                         break;
                 }
 
+                int metode = res.getInt("metode_pembayaran");
+                String metodeBayar = "";
+
+                switch (metode) {
+                    case 1:
+                        metodeBayar = "Cash";
+                        break;
+                    case 2:
+                        metodeBayar = "Dana";
+                        break;
+                    case 3:
+                        metodeBayar = "ShopeePay";
+                        break;
+                    case 4:
+                        metodeBayar = "Link Aja";
+                        break;
+                    case 5:
+                        metodeBayar = "Gopay";
+                        break;
+                    default:
+                        break;
+                }
+
                 tbl.addRow(new Object[]{
                     num,
-                    "#" + res.getInt("id"),
+                    res.getInt("id"),
                     res.getDate("tgl_transaksi"),
                     res.getString("id_barang").toUpperCase() + " - " + res.getString("nama_barang"),
                     res.getInt("qty"),
                     id.format(total_bayar),
+                    metodeBayar,
                     status,});
 
                 tableOrder.setModel(tbl);
 
                 TableColumnModel tcm = tableOrder.getColumnModel();
-                tcm.getColumn(0).setPreferredWidth(2);
+                tcm.getColumn(0).setPreferredWidth(1);
                 tcm.getColumn(1).setPreferredWidth(2);
                 tcm.getColumn(2).setPreferredWidth(100);
                 tcm.getColumn(3).setPreferredWidth(255);
                 tcm.getColumn(4).setPreferredWidth(2);
                 tcm.getColumn(5).setPreferredWidth(100);
-                tcm.getColumn(6).setPreferredWidth(6);
+                tcm.getColumn(6).setPreferredWidth(24);
+                tcm.getColumn(7).setPreferredWidth(6);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(rootPane, "Gagal");
@@ -131,7 +156,6 @@ public class Transaksi extends javax.swing.JFrame {
         btnDelete = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1200, 850));
 
         orderPanel.setBackground(new java.awt.Color(241, 245, 249));
         orderPanel.setPreferredSize(new java.awt.Dimension(1200, 850));
@@ -219,25 +243,21 @@ public class Transaksi extends javax.swing.JFrame {
             orderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(orderPanelLayout.createSequentialGroup()
                 .addGap(44, 44, 44)
-                .addGroup(orderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(orderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(orderPanelLayout.createSequentialGroup()
+                        .addComponent(btnNewOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(orderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(panelTitle1)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, orderPanelLayout.createSequentialGroup()
-                        .addGroup(orderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1094, Short.MAX_VALUE)
-                            .addGroup(orderPanelLayout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(btnPay, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(orderPanelLayout.createSequentialGroup()
-                                .addComponent(btnNewOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(74, 74, 74))))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1313, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(orderPanelLayout.createSequentialGroup()
+                        .addComponent(btnPay, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
         orderPanelLayout.setVerticalGroup(
             orderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -266,7 +286,7 @@ public class Transaksi extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(orderPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1212, Short.MAX_VALUE)
+            .addComponent(orderPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -284,7 +304,6 @@ public class Transaksi extends javax.swing.JFrame {
     private void btnNewOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewOrderActionPerformed
         // TODO add your handling code here:
         order.setVisible(true);
-        order.setAlwaysOnTop(true);
         order.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }//GEN-LAST:event_btnNewOrderActionPerformed
 
@@ -294,47 +313,69 @@ public class Transaksi extends javax.swing.JFrame {
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         // TODO add your handling code here:
+        int index = tableOrder.getSelectedRow();
+        TableModel model = tableOrder.getModel();
+
+        if (tableOrder.getSelectedRowCount() == 1) {
+            String id = model.getValueAt(index, 1).toString();
+            String selectedProduk = model.getValueAt(index, 3).toString();
+            String jumlah = model.getValueAt(index, 4).toString();
+            String selectedMetode = model.getValueAt(index, 6).toString();
+
+            editOrder.idField.setText(id);
+
+            editOrder.produkSelect.setSelectedItem(selectedProduk);
+
+            editOrder.qtyField.setText(jumlah);
+
+            editOrder.metodeBayarSelect.setSelectedItem(selectedMetode);
+            
+            editOrder.setVisible(true);
+            editOrder.pack();
+            editOrder.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        } else {
+            if (tableOrder.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "Table is empty");
+            } else {
+                JOptionPane.showMessageDialog(this, "Please select single row for edit");
+            }
+        }
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         // TODO add your handling code here:
-//        DefaultTableModel tblModel = (DefaultTableModel) tableOrder.getModel();
-//
-//        if (tableOrder.getSelectedRowCount() == 1) {
-////            tblModel.removeRow(tableOrder.getSelectedRow());
-//
-//            String[] row = tableOrder.getValueAt(tableOrder.getSelectedRow(), 1).toString().split("#");
-//
-////            int option = JOptionPane.showConfirmDialog(this, "Yakin Ingin DIhapus ?");
-////
-////            switch (option) {
-////                case JOptionPane.YES_OPTION:
-////                    try {
-////                    String sql = "DELETE FROM tb_transaksi WHERE id = " + id;
-////                    java.sql.Connection conn = (Connection) Koneksi.getConnection();
-////                    java.sql.PreparedStatement pstm = conn.prepareStatement(sql);
-////                    pstm.execute();
-////                    JOptionPane.showMessageDialog(null, "Data has been deleted");
-////                } catch (HeadlessException | SQLException e) {
-////                    JOptionPane.showMessageDialog(this, e.getMessage());
-////                }
-////            }
-//        } else {
-//            if (tableOrder.getRowCount() == 0) {
-//                JOptionPane.showMessageDialog(this, "Table is empty");
-//            } else {
-//                JOptionPane.showMessageDialog(this, "Please select single row for delete");
-//            }
-//        }
+        DefaultTableModel tblModel = (DefaultTableModel) tableOrder.getModel();
+
+        if (tableOrder.getSelectedRowCount() == 1) {
+            String row = tableOrder.getValueAt(tableOrder.getSelectedRow(), 1).toString();
+            int choosenId = Integer.parseInt(row);
+
+            int option = JOptionPane.showConfirmDialog(this, "Delete this data?");
+
+            switch (option) {
+                case JOptionPane.YES_OPTION:
+                    try {
+                    String sql = "DELETE FROM tb_transaksi WHERE id = " + choosenId;
+                    java.sql.Connection conn = (Connection) Koneksi.getConnection();
+                    java.sql.PreparedStatement pstm = conn.prepareStatement(sql);
+                    pstm.execute();
+                    JOptionPane.showMessageDialog(null, "Data has been deleted");
+                    tblModel.removeRow(tableOrder.getSelectedRow());
+                } catch (HeadlessException | SQLException e) {
+                    JOptionPane.showMessageDialog(this, e.getMessage());
+                }
+            }
+        } else {
+            if (tableOrder.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "Table is empty");
+            } else {
+                JOptionPane.showMessageDialog(this, "Please select single row for delete");
+            }
+        }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void tableOrderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableOrderMouseClicked
         // TODO add your handling code here:
-        int i = tableOrder.getSelectedRow();
-        if (i > -1) {
-            choosenId = Integer.parseInt(tableOrder.getValueAt(i, 1).toString());
-            System.out.println(choosenId);
-        }
     }//GEN-LAST:event_tableOrderMouseClicked
 
     /**
