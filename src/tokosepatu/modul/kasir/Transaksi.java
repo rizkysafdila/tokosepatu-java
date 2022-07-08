@@ -30,14 +30,9 @@ public class Transaksi extends javax.swing.JFrame {
      */
     public Transaksi() {
         initComponents();
-        setResizable(false);
-        
+
         datatable();
     }
-
-    CreateOrder order = new CreateOrder();
-    EditOrder editOrder = new EditOrder();
-    ProdukSelector prod = new ProdukSelector();
 
     DecimalFormat id = (DecimalFormat) DecimalFormat.getCurrencyInstance();
     DecimalFormatSymbols rp = new DecimalFormatSymbols();
@@ -56,7 +51,7 @@ public class Transaksi extends javax.swing.JFrame {
 
         try {
             Statement statement = (Statement) Koneksi.getConnection().createStatement();
-            ResultSet res = statement.executeQuery("SELECT * FROM tb_transaksi ts LEFT JOIN tb_barang brg ON ts.id_barang = brg.id ORDER BY ts.id");
+            ResultSet res = statement.executeQuery("SELECT * FROM tb_transaksi ts LEFT JOIN tb_barang brg ON ts.id_barang = brg.id ORDER BY ts.tgl_transaksi desc");
             int num = 0;
 
             rp.setCurrencySymbol("Rp");
@@ -111,7 +106,7 @@ public class Transaksi extends javax.swing.JFrame {
 
                 tbl.addRow(new Object[]{
                     num,
-                    res.getInt("id"),
+                    res.getString("id"),
                     res.getDate("tgl_transaksi"),
                     res.getString("id_barang").toUpperCase() + " - " + res.getString("nama_barang"),
                     res.getInt("qty"),
@@ -132,7 +127,7 @@ public class Transaksi extends javax.swing.JFrame {
                 tcm.getColumn(7).setPreferredWidth(6);
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(rootPane, "Gagal");
+            JOptionPane.showMessageDialog(rootPane, e.getMessage());
         }
     }
 
@@ -152,7 +147,6 @@ public class Transaksi extends javax.swing.JFrame {
         tableOrder = new javax.swing.JTable();
         btnPay = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
-        btnEdit = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -219,15 +213,6 @@ public class Transaksi extends javax.swing.JFrame {
             }
         });
 
-        btnEdit.setBackground(new java.awt.Color(234, 179, 8));
-        btnEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tokosepatu/images/outline/Edit.png"))); // NOI18N
-        btnEdit.setBorder(null);
-        btnEdit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditActionPerformed(evt);
-            }
-        });
-
         btnDelete.setBackground(new java.awt.Color(255, 0, 0));
         btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/tokosepatu/images/outline/Trash Bin.png"))); // NOI18N
         btnDelete.setBorder(null);
@@ -247,8 +232,6 @@ public class Transaksi extends javax.swing.JFrame {
                     .addGroup(orderPanelLayout.createSequentialGroup()
                         .addComponent(btnNewOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
                         .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(orderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(panelTitle1)
@@ -265,9 +248,7 @@ public class Transaksi extends javax.swing.JFrame {
                 .addGroup(orderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(orderPanelLayout.createSequentialGroup()
                         .addGap(146, 146, 146)
-                        .addGroup(orderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(orderPanelLayout.createSequentialGroup()
                         .addGap(53, 53, 53)
                         .addComponent(panelTitle1)
@@ -301,46 +282,9 @@ public class Transaksi extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnPayActionPerformed
 
-    private void btnNewOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewOrderActionPerformed
-        // TODO add your handling code here:
-        order.setVisible(true);
-        order.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    }//GEN-LAST:event_btnNewOrderActionPerformed
-
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCancelActionPerformed
-
-    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        // TODO add your handling code here:
-        int index = tableOrder.getSelectedRow();
-        TableModel model = tableOrder.getModel();
-
-        if (tableOrder.getSelectedRowCount() == 1) {
-            String id = model.getValueAt(index, 1).toString();
-            String selectedProduk = model.getValueAt(index, 3).toString();
-            String jumlah = model.getValueAt(index, 4).toString();
-            String selectedMetode = model.getValueAt(index, 6).toString();
-
-            editOrder.idField.setText(id);
-
-            editOrder.produkSelect.setSelectedItem(selectedProduk);
-
-            editOrder.qtyField.setText(jumlah);
-
-            editOrder.metodeBayarSelect.setSelectedItem(selectedMetode);
-            
-            editOrder.setVisible(true);
-            editOrder.pack();
-            editOrder.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        } else {
-            if (tableOrder.getRowCount() == 0) {
-                JOptionPane.showMessageDialog(this, "Table is empty");
-            } else {
-                JOptionPane.showMessageDialog(this, "Please select single row for edit");
-            }
-        }
-    }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         // TODO add your handling code here:
@@ -348,14 +292,14 @@ public class Transaksi extends javax.swing.JFrame {
 
         if (tableOrder.getSelectedRowCount() == 1) {
             String row = tableOrder.getValueAt(tableOrder.getSelectedRow(), 1).toString();
-            int choosenId = Integer.parseInt(row);
+            String choosenId = row;
 
             int option = JOptionPane.showConfirmDialog(this, "Delete this data?");
 
             switch (option) {
                 case JOptionPane.YES_OPTION:
                     try {
-                    String sql = "DELETE FROM tb_transaksi WHERE id = " + choosenId;
+                    String sql = "DELETE FROM tb_transaksi WHERE id = '" + choosenId + "'";
                     java.sql.Connection conn = (Connection) Koneksi.getConnection();
                     java.sql.PreparedStatement pstm = conn.prepareStatement(sql);
                     pstm.execute();
@@ -377,6 +321,13 @@ public class Transaksi extends javax.swing.JFrame {
     private void tableOrderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableOrderMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_tableOrderMouseClicked
+
+    private void btnNewOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewOrderActionPerformed
+        // TODO add your handling code here:
+        Kasir kasir = new Kasir();
+        kasir.setVisible(true);
+        kasir.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    }//GEN-LAST:event_btnNewOrderActionPerformed
 
     /**
      * @param args the command line arguments
@@ -417,7 +368,6 @@ public class Transaksi extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnDelete;
-    private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnNewOrder;
     private javax.swing.JButton btnPay;
     private javax.swing.JScrollPane jScrollPane2;
